@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    testImplementation 'io.rest-assured:rest-assured:5.3.0'
+
+    implementation 'org.slf4j:slf4j-api:2.0.5'
+    implementation 'org.slf4j:slf4j-simple:2.0.5'
+    implementation 'org.json:json:20230227'
+    implementation 'io.rest-assured:json-path:5.3.0'
+    implementation 'io.cucumber:cucumber-java:7.11.1'
+    implementation 'io.cucumber:cucumber-junit:7.11.1'
+}
+
+test {
+//    useJUnitPlatform()
+    systemProperty "cucumber.filter.tags", System.getProperty("cucumber.filter.tags")
+    filter {
+        includeTestsMatching "*.TestRunner"                   //Set to your Cucumber Runner directory/Package
+    }
+    systemProperties System.getProperties()
+}
