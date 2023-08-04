@@ -1,11 +1,13 @@
 package implementation;
 
-import GlobalVars.GlobalVars;
+import globalvars.GlobalVars;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
 import org.json.JSONObject;
 import org.junit.Assert;
+
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -29,10 +31,19 @@ public class RestAssuredImplementation {
                 payload.append((char) i);
             fileReader.close();
 
-            RequestSpecification req = given().baseUri(GlobalVars.baseUri).log().all()
+            RequestSpecification req = given()
+                    .baseUri(GlobalVars.baseUri)
+                    .log()
+                    .all()
                     .header("Content-Type", "application/json");
             Log.info("**********************POST REQUEST**********************");
-            Response res = req.body(payload.toString()).post().then().log().all().extract().response();
+            Response res = req.body(payload.toString())
+                    .post()
+                    .then()
+                    .log()
+                    .all()
+                    .extract().
+                    response();
 
             SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
             Date date = new Date();
@@ -57,9 +68,10 @@ public class RestAssuredImplementation {
 //      PATCH Payload
             JSONObject payload = new JSONObject();
             payload.put("firstname", "changedName");
-
+            System.out.println(payload.get("firstname"));
 //      Authenticating by successfully updating the payload using PATCH method of RestAssured
-            RequestSpecification req = given().baseUri(GlobalVars.baseUri)
+            RequestSpecification req = given()
+                    .baseUri(GlobalVars.baseUri)
                     .log()
                     .all()
                     .header("Content-Type", "application/json")
@@ -69,7 +81,9 @@ public class RestAssuredImplementation {
             Log.info("Authentication Token : " + new String(Base64.getEncoder().encode(payload.toString().getBytes())));
 
 
-            Response res = req.body(payload.toString())
+            Response res = req
+                    .when()
+                    .body(payload.toString())
                     .patch(bookingID)
                     .then()
                     .log()
@@ -161,7 +175,9 @@ public class RestAssuredImplementation {
 
     }
 
+
     //  VALIDATING DELETE USING GET REQUEST
+
     public static void validateDelete() {
         try {
             RequestSpecification req = given()
@@ -170,13 +186,16 @@ public class RestAssuredImplementation {
                     .all()
                     .header("Content-Type", "application/json");
             Log.info("****************VALIDATING DELETE USING GET REQUEST****************");
-            Response res = req.get(bookingID)
+            Response res = req.get("625")
                     .then()
                     .log()
                     .all()
                     .extract()
                     .response();
             int statusCode = res.getStatusCode();
+            JsonPath jp = new JsonPath(res.asString());
+            System.out.println(jp.getString("bookingdates.checkin"));
+            System.out.println(res.path("bookingdates.checkin").toString());
 
 /*     Note*:
        If status code shows 404 it means the requested data is not

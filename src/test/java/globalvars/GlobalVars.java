@@ -1,4 +1,4 @@
-package GlobalVars;
+package globalvars;
 
 public class GlobalVars {
     public static final String baseUri = "https://restful-booker.herokuapp.com/booking";
